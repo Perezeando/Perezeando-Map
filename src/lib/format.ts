@@ -43,18 +43,23 @@ export const norm = (s: string | undefined | null) =>
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
 
-export const thumbUrl = (src: string) => {
+export function sizedThumb(src: string, w: number) {
   if (!src) return src;
   const local = mediaPath(src);
   if (local.startsWith('/media/')) {
+    const tag = w <= 160 ? 120 : w <= 400 ? 320 : 800;
     return mediaUrl(
-      local.replace(/-(?:120|320|800)\.webp$/i, '-120.webp').replace(/\.(jpe?g|png)$/i, '-120.webp'),
+      local.replace(/-(?:120|320|800)\.webp$/i, `-${tag}.webp`).replace(/\.(jpe?g|png)$/i, `-${tag}.webp`),
     );
   }
-  if (src.includes('/960px-')) return src.replace('/960px-', '/120px-');
-  const m =
+  if (src.includes('/960px-') && w <= 160) return src.replace('/960px-', '/120px-');
+  const full =
     /^(https:\/\/upload\.wikimedia\.org\/wikipedia\/commons)\/([0-9a-f]\/[0-9a-f]{2})\/([^/?#]+\.(?:jpe?g|png))(?:[?#].*)?$/i.exec(
       src,
     );
-  return m ? `${m[1]}/thumb/${m[2]}/${m[3]}/120px-${m[3]}` : src;
-};
+  if (full) return `${full[1]}/thumb/${full[2]}/${full[3]}/${w}px-${full[3]}`;
+  if (!/(upload|thumb)\.wikimedia\.org\/.+\/thumb\//.test(src)) return src;
+  return src.replace(/\/(\d+)px-([^/]+)$/, (m, n, rest) => (Number(n) > w ? `/${w}px-${rest}` : m));
+}
+
+export const thumbUrl = (src: string) => sizedThumb(src, 120);

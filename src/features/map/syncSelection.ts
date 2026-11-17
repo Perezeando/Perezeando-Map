@@ -13,6 +13,10 @@ export function syncPlaces(c: MapController, withGeoms = true) {
   const favs = new Set(s.favs);
   (c.map.getSource('places') as GeoJSONSource).setData(placeCollection(vis, s.lang, favs));
   if (withGeoms) (c.map.getSource('geoms') as GeoJSONSource).setData(geomCollection(vis, s.lang));
+  const prov = c.map.getSource('prov') as GeoJSONSource | undefined;
+  if (prov && c.d.provinces.features.some((f) => f.geometry)) {
+    prov.setData(c.d.provinces as GeoJSON.FeatureCollection);
+  }
 }
 
 export function syncSelected(c: MapController) {

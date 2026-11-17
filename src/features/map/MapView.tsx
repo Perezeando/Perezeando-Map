@@ -102,9 +102,7 @@ export default function MapView() {
     };
     ctrl.map.on('idle', onIdle);
     const bootMax = window.setTimeout(boot, 14000);
-    ctrl.map.once('idle', () => {
-      void loadGeoms();
-    });
+    void loadGeoms();
     let tipT: ReturnType<typeof setTimeout> | undefined;
     const unsub = useApp.subscribe((s, prev) => {
       ctrl.update(s);

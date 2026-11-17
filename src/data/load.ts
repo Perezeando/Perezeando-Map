@@ -58,15 +58,21 @@ export const useGeoms = create<{ ready: boolean }>(() => ({ ready: false }));
 let geomsP: Promise<void> | null = null;
 export function loadGeoms() {
   if (!geomsP) {
-    geomsP = Promise.all([loadData(), getJson<Record<string, Place['geometry']>>('geoms.json')]).then(
-      ([d, g]) => {
-        for (const id in g) {
-          const p = d.byId.get(id);
-          if (p) p.geometry = g[id];
-        }
-        useGeoms.setState({ ready: true });
-      },
-    );
+    geomsP = Promise.all([
+      loadData(),
+      getJson<Record<string, Place['geometry']>>('geoms.json'),
+      getJson<Record<string, NonNullable<ProvincesFC['features'][number]['geometry']>>>('prov-geoms.json'),
+    ]).then(([d, g, pg]) => {
+      for (const id in g) {
+        const p = d.byId.get(id);
+        if (p) p.geometry = g[id];
+      }
+      for (const f of d.provinces.features) {
+        const geom = pg[f.properties.id];
+        if (geom) f.geometry = geom;
+      }
+      useGeoms.setState({ ready: true });
+    });
     geomsP.catch(() => (geomsP = null));
   }
   return geomsP;

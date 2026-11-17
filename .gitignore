@@ -16,11 +16,13 @@ public/media/
 # Reportes locales de scripts (se regeneran)
 perf/*
 !perf/.gitkeep
+scripts/.data-stamp
+scripts/data/fauna-fetch-cache.json
+scripts/data/enrich-report.json
+scripts/data/lang-audit.json
 
 # Estado local de Wrangler
 .wrangler/
 
-
-# sacamos el handoff
-HANDOFF.md
+# Notas locales de handoff (no versionar)
 HANDOFF.md

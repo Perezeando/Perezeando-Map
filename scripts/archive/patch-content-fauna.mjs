@@ -3,7 +3,7 @@ import path from 'node:path';
 const BASE = process.cwd();
 const pcPath = path.join(BASE, 'public', 'data', 'provinces-content.json');
 const pc = JSON.parse(fs.readFileSync(pcPath, 'utf8'));
-const canton = JSON.parse(fs.readFileSync(path.join(BASE, 'data', 'canton-activities.json'), 'utf8'));
+const canton = JSON.parse(fs.readFileSync(path.join(BASE, 'scripts', 'archive', 'canton-activities.json'), 'utf8'));
 
 let actItems = 0;
 let stripped = 0;

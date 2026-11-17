@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { Place, PlaceImage } from '../data/types';
-import { thumbUrl } from './format';
-import { mediaPath, mediaUrl } from './mediaUrl';
+import { sizedThumb, thumbUrl } from './format';
+import { mediaPath } from './mediaUrl';
+
+export { sizedThumb } from './format';
 
 const isLocalMediaSrc = (src?: string | null) => {
   if (!src) return false;
@@ -41,19 +43,6 @@ export function satelliteSnapshot(p: Place, w = 768, h = 416) {
     f: 'image',
   });
   return `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?${q}`;
-}
-
-export function sizedThumb(src: string, w: number) {
-  if (!src) return src;
-  const local = mediaPath(src);
-  if (local.startsWith('/media/')) {
-    const tag = w <= 160 ? 120 : w <= 400 ? 320 : 800;
-    return mediaUrl(
-      local.replace(/-(?:120|320|800)\.webp$/i, `-${tag}.webp`).replace(/\.(jpe?g|png)$/i, `-${tag}.webp`),
-    );
-  }
-  if (!/(upload|thumb)\.wikimedia\.org\/.+\/thumb\//.test(src)) return src;
-  return src.replace(/\/(\d+)px-([^/]+)$/, (m, n, rest) => (Number(n) > w ? `/${w}px-${rest}` : m));
 }
 
 export const HERO_W =

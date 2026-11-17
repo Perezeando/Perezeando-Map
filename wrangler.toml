@@ -1,9 +1,14 @@
 name = "perezeando"
 compatibility_date = "2026-11-04"
 main = "worker/index.js"
+workers_dev = true
 
 [assets]
 directory = "./dist"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 run_worker_first = ["/"]
+
+# [[routes]]
+# pattern = "mapa.perezeando.com"
+# custom_domain = true

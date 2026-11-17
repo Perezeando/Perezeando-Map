@@ -1,5 +1,5 @@
 import { getApp, setApp } from './useApp';
-import { getData } from '../data/load';
+import { getData, loadGeoms } from '../data/load';
 import type { CategoryId, ProvinceFilter, ProvinceId, SheetState, Tab } from '../data/types';
 import { CATEGORY_ORDER, CR_BOUNDS, GROUPS } from '../data/config';
 import { boundsOf, ll, positions } from '../lib/geo';
@@ -46,18 +46,22 @@ export function closeDetail(kind: 'close' | 'back') {
 }
 
 function fitProvince(id: ProvinceFilter) {
-  const d = getData();
-  if (!d) return;
-  if (id === 'all') return withMap((m) => m.fitBounds(CR_BOUNDS));
-  if (id === 'mar') {
-    const f = d.eez.features.find((x) => x.properties.id === 'pacificEEZ');
-    const b = f && boundsOf(positions(f.geometry));
+  const run = () => {
+    const d = getData();
+    if (!d) return;
+    if (id === 'all') return withMap((m) => m.fitBounds(CR_BOUNDS));
+    if (id === 'mar') {
+      const f = d.eez.features.find((x) => x.properties.id === 'pacificEEZ');
+      const b = f && boundsOf(positions(f.geometry));
+      if (b) withMap((m) => m.fitBounds(b));
+      return;
+    }
+    const f = d.provinces.features.find((x) => x.properties.id === id);
+    const b = f?.geometry && boundsOf(positions(f.geometry));
     if (b) withMap((m) => m.fitBounds(b));
-    return;
-  }
-  const f = d.provinces.features.find((x) => x.properties.id === id);
-  const b = f && boundsOf(positions(f.geometry));
-  if (b) withMap((m) => m.fitBounds(b));
+  };
+  if (id === 'all' || id === 'mar') run();
+  else void loadGeoms().then(run);
 }
 
 export function setProv(id: ProvinceFilter, fit = false) {

@@ -25,7 +25,7 @@ function writeServiceWorker(out: string, root: string, mediaHost: string) {
   const shell = files
     .filter((f) => (f === 'index.html' || f === 'manifest.webmanifest' || /^(assets|fonts|icons|mascots)\//.test(f) || /^(favicon[^/]*|apple-touch-icon\.png)$/.test(f)) && !/maplibre/i.test(f))
     .sort();
-  const dataFiles = ['atlas.json', 'geoms.json', 'provinces-content.json'];
+  const dataFiles = ['atlas.json', 'geoms.json', 'prov-geoms.json', 'provinces-content.json'];
   const data: Record<string, string> = {};
   for (const d of dataFiles) {
     const p = path.join(out, 'data', d);
@@ -97,6 +97,13 @@ function serviceWorker(): Plugin {
         .replace(/\/+$/, '');
     },
     closeBundle() {
+      if (media) {
+        const mediaDir = path.join(out, 'media');
+        if (fs.existsSync(mediaDir)) {
+          fs.rmSync(mediaDir, { recursive: true, force: true });
+          console.log('dist: removed media/ (VITE_MEDIA_BASE_URL set → CDN)');
+        }
+      }
       finalizeData(out, media);
       writeServiceWorker(out, root, hostOf(media));
       fs.writeFileSync(path.join(out, '.assetsignore'), 'media/**\n');

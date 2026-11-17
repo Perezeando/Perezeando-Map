@@ -77,7 +77,9 @@ const stamp = inputStamp();
 if (process.env.FORCE_BUILD_DATA !== '1') {
   try {
     const prev = fs.readFileSync(STAMP, 'utf8').trim();
-    const outs = ['atlas.json', 'geoms.json', 'share.json'].every((f) => fs.existsSync(new URL(f, OUT)));
+    const outs = ['atlas.json', 'geoms.json', 'prov-geoms.json', 'share.json'].every((f) =>
+      fs.existsSync(new URL(f, OUT)),
+    );
     if (prev === stamp && outs) {
       console.log(`atlas al día (${stamp.slice(0, 12)}), se omite build-data`);
       process.exit(0);
@@ -194,13 +196,22 @@ const places = [...curated, ...wd, ...osm, ...added, ...faunaAdded].map((p) => {
 });
 const fc = (f, tol) => { const g = rd(f); g.features = g.features.map((ft) => ({ ...ft, geometry: geom(ft.geometry, tol, 4) })); return g; };
 const provFc = fc('provinces.geojson', 0.0012);
-provFc.features.forEach((ft) => { const n = NICK.provinces[ft.properties.id]; if (n) ft.properties.nick = n; });
+const provGeoms = {};
+provFc.features.forEach((ft) => {
+  const n = NICK.provinces[ft.properties.id];
+  if (n) ft.properties.nick = n;
+  provGeoms[ft.properties.id] = ft.geometry;
+  ft.geometry = null;
+});
 const atlas = { v: 1, places, provinces: provFc, eez: fc('eez.geojson', 0.001) };
 const out = JSON.stringify(atlas);
 fs.writeFileSync(new URL('atlas.json', OUT), out);
 const g = JSON.stringify(geoms);
 fs.writeFileSync(new URL('geoms.json', OUT), g);
+const pg = JSON.stringify(provGeoms);
+fs.writeFileSync(new URL('prov-geoms.json', OUT), pg);
 console.log(`geoms.json: ${Object.keys(geoms).length} trazados, ${(g.length / 1024).toFixed(0)} KB`);
+console.log(`prov-geoms.json: ${Object.keys(provGeoms).length} provincias, ${(pg.length / 1024).toFixed(0)} KB`);
 console.log(`atlas.json: ${places.length} lugares, ${(out.length / 1024).toFixed(0)} KB`);
 const count = new Map();
 const ids = new Set(places.map((p) => p.id));

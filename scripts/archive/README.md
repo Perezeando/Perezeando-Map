@@ -4,7 +4,7 @@ Scripts de una sola pasada que ya se aplicaron a los datos. Se guardan como refe
 
 - `fetch-media-v36.mjs`: pasada de medios v36 (comida/contenido a `/media`).
 - `fix-media-gaps.mjs`: rellenó huecos de WebP puntuales.
-- `patch-content-fauna.mjs`: parche de fauna en `provinces-content.json` (`pnpm patch-fauna-content`).
+- `patch-content-fauna.mjs` + `canton-activities.json`: parche de fauna/actividades ya mergeado en `provinces-content.json`.
 - `_strip-comments.mjs`: pasada de 2026-11-11 que quitó comentarios de código con AST.
 
-Se ejecutan desde la raíz del repo (`node scripts/archive/<script>.mjs`). Requieren `sharp`.
+Se ejecutan desde la raíz del repo (`node scripts/archive/<script>.mjs`). Requieren `sharp` si el script lo pide.

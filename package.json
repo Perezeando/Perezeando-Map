@@ -23,7 +23,6 @@
     "enrich-es": "node scripts/enrich-es-content.mjs",
     "audit-lang": "node scripts/audit-lang.mjs",
     "fetch-fauna": "node scripts/fetch-fauna-media.mjs",
-    "patch-fauna-content": "node scripts/archive/patch-content-fauna.mjs",
     "audit-quality": "node scripts/audit-quality.mjs",
     "audit-remote": "node scripts/audit-remote.mjs",
     "sync-media": "node scripts/sync-media-r2.mjs",

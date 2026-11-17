@@ -6,7 +6,7 @@ const { NEAR_RADIUS_KM, NEAR_RADIUS_EXPAND_KM, NEAR_EXPAND_IF_BELOW, NEAR_CAP, N
 
 export { NEAR_PREVIEW, NEAR_RADIUS_KM, NEAR_RADIUS_EXPAND_KM, NEAR_EXPAND_IF_BELOW, NEAR_CAP };
 
-export function nearbyByDistance(origin: [number, number], places: Place[], excludeId?: string) {
+function nearbyByDistance(origin: [number, number], places: Place[], excludeId?: string) {
   const list = excludeId ? places.filter((p) => p.id !== excludeId) : places.slice();
   const dists = new Map(list.map((p) => [p.id, haversine(origin, ll(p))]));
   list.sort((a, b) => dists.get(a.id)! - dists.get(b.id)!);

@@ -19,7 +19,7 @@ export function addContentLayers(map: MLMap, d: AtlasData, cluster: boolean): ma
     maxzoom: 14,
     attribution: 'Relieve · Mapzen (AWS Open Data)',
   });
-  map.addSource('prov', { type: 'geojson', data: d.provinces as FC, promoteId: 'id' });
+  map.addSource('prov', { type: 'geojson', data: EMPTY, promoteId: 'id' });
   map.addSource('eez', { type: 'geojson', data: d.eez as FC, promoteId: 'id' });
   map.addSource('geoms', { type: 'geojson', data: EMPTY, promoteId: 'id' });
   map.addSource('route', { type: 'geojson', data: EMPTY });

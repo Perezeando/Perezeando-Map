@@ -66,7 +66,7 @@
 
 ---
 
-## 🧭 Qué se puede hacer
+## 🧭 ¿Qué se puede hacer?
 
 <table>
   <tr>
